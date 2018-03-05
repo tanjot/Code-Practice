@@ -63,8 +63,50 @@
 
 using namespace std;
 
-bool ransom_note(vector<string> magazine, vector<string> ransom) {
+bool create_ransom_note(unordered_map<string, int> magazine, vector<string> ransom)
+{
+    unordered_map<string, int>::iterator  mapIt;
+    for(vector<string>::const_iterator it=ransom.begin();
+            it != ransom.end(); ++it)
+    {
+        mapIt = magazine.find(*it);
+        if( mapIt == magazine.end())// && mapIt->second <= 0 )
+        {
+            return false;
+        }
+        else
+        {
+            mapIt->second--;
+            if(mapIt->second == 0)
+            {
+                magazine.erase(*it);
+            }
+        }
+    }
 
+    return true;
+}
+
+bool ransom_note(vector<string> magazine, vector<string> ransom) {
+    bool ret_val = false;
+    unordered_map<string, int> mag;
+    unordered_map<string, int>::iterator  mapIt;
+
+    //Insert magazine words into map "mag"
+    for(vector<string>::const_iterator it=magazine.begin(); it != magazine.end(); ++it)
+    {
+        mapIt = mag.find(*it);
+        if( mapIt == mag.end() )
+        {
+            mag.insert(std::make_pair(*it, 1));
+        }
+        else
+        {
+            mapIt->second++;
+        }
+    }
+    ret_val = create_ransom_note(mag, ransom);
+    return ret_val;
 }
 
 int main(){
@@ -85,3 +127,4 @@ int main(){
         cout << "No\n";
     return 0;
 }
+
